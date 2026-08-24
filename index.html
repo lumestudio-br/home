@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lume Studio</title>
+
+<!-- ═══════════════════════════════════════════════════════════
+     🟠 FAVICON — troque o "href" abaixo pelo link/arquivo do
+     ícone da aba do navegador (ex: assets/favicon.png)
+     ═══════════════════════════════════════════════════════════ -->
+<link rel="icon" type="image/png" href="FAVICON.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ═══════════════════════════════════════════════════════════
+     🎨 CORES DA MARCA — mude aqui para atualizar em todo o site
+     ═══════════════════════════════════════════════════════════ */
+  :root{
+    --dark:#141414;        /* fundo escuro principal (seções dark) */
+    --dark-2:#1c1c1c;       /* fundo escuro secundário */
+    --cream:#F5EFDD;        /* fundo claro / off-white (seções light) */
+    --white:#F9F9F9;        /* branco quase puro (textos sobre fundo escuro) */
+    --orange-1:#E84F03;     /* laranja escuro — início dos gradientes */
+    --orange-2:#FF792D;     /* laranja claro — fim dos gradientes, CTAs */
+    --gray:#A7A7A7;         /* cinza médio — textos secundários */
+    --gray-2:#333333;       /* cinza-chumbo — cards/fundos escuros alternativos */
+    --ink:#1a1a1a;          /* texto escuro sobre fundo claro */
+    --disp: 'Bricolage Grotesque', sans-serif;   /* fonte dos títulos */
+    --body: 'Sora', sans-serif;                   /* fonte do texto corrido */
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  ::selection{ background:var(--orange-2); color:#141414; }
+  ::-moz-selection{ background:var(--orange-2); color:#141414; }
+  body{
+    font-family:var(--body);
+    background:var(--dark);
+    color:var(--white);
+    overflow-x:hidden;
+  }
+  img{max-width:100%; display:block;}
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+  @media(max-width:700px){ .wrap{padding:0 20px;} }
+
+  /* ---- reusable ---- */
+  .eyebrow{
+    display:flex; align-items:center; gap:12px;
+    font-size:12px; letter-spacing:.2em; font-weight:600;
+    color:var(--orange-2); text-transform:uppercase; margin-bottom:18px;
+  }
+  .eyebrow::before{content:''; width:28px; height:1px; background:var(--orange-2);}
+  .eyebrow.on-dark{color:var(--orange-2);}
+  .eyebrow.on-light{color:var(--orange-1);}
+
+  h1,h2,h3{font-family:var(--disp); font-weight:700; line-height:1.05; letter-spacing:-0.01em;}
+
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:16px 28px; border-radius:999px;
+    font-family:var(--body); font-weight:600; font-size:15px;
+    cursor:pointer; transition: transform .25s ease, box-shadow .25s ease, background .3s ease, backdrop-filter .3s ease, border-color .3s ease;
+    white-space:nowrap;
+  }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn-primary{
+    background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
+    color:#141414;
+    box-shadow: 0 10px 30px -10px rgba(232,79,3,.6);
+  }
+  .btn-primary:hover{ box-shadow: 0 16px 34px -8px rgba(255,121,45,.7); }
+  /* glass / frosted button */
+  .btn-outline{
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.2);
+    color:var(--white);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+  .btn-outline:hover{
+    background:rgba(255,255,255,.1);
+    border-color:rgba(255,255,255,.5);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+  .btn-outline.on-light{
+    background:rgba(20,20,20,.03);
+    border:1px solid rgba(20,20,20,.18); color:var(--ink);
+  }
+  .btn-outline.on-light:hover{
+    background:rgba(20,20,20,.08);
+    border-color:rgba(20,20,20,.4);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .glass{
+    background: rgba(255,255,255,.04);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,.08);
+  }
+
+  .highlight{
+    background: linear-gradient(100deg, var(--orange-1), var(--orange-2) 70%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    display:inline;
+  }
+
+  .grad-word{
+    background: linear-gradient(100deg, var(--orange-1), var(--orange-2) 70%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+
+  .squircle{
+    width:52px; height:52px; border-radius:16px;
+    background:var(--cream);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    overflow:hidden;
+  }
+  .squircle svg{ width:24px; height:24px; }
+  .squircle img{ width:24px; height:24px; object-fit:contain; }
+
+  /* floating icon animation */
+  @keyframes floaty{
+    0%,100%{ transform:translateY(0) rotate(0deg); }
+    50%{ transform:translateY(-14px) rotate(3deg); }
+  }
+  .float{ animation: floaty 6s ease-in-out infinite; }
+  .float.delay1{ animation-delay:.8s; }
+  .float.delay2{ animation-delay:1.6s; }
+  .float.delay3{ animation-delay:2.4s; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .float{ animation:none; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     ✨ ANIMAÇÃO DE ENTRADA (scroll reveal) — elementos "surgem"
+     suavemente conforme aparecem na tela ao rolar a página
+     ═══════════════════════════════════════════════════════════ */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+  }
+  .reveal.in-view{
+    opacity:1;
+    transform:translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1; transform:none; transition:none; }
+  }
+
+  /* ================= HEADER ================= */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    padding:16px 0;
+    background:rgba(20,20,20,.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{ display:flex; align-items:center; }
+  .logo img{ height:30px; width:auto; display:block; }
+  .logo.foot-logo img{ height:38px; }
+  header .header-inner{ }
+  header nav{ display:flex; align-items:center; gap:36px; }
+  header nav a.navlink{ font-size:14px; color:var(--white); opacity:.8; transition:opacity .2s ease; }
+  header nav a.navlink:hover{ opacity:1; }
+  header .btn-outline{ padding:12px 22px; font-size:13px; }
+  @media(max-width:600px){ header .btn-outline span.long{display:none;} header nav a.navlink{ display:none; } }
+
+  /* ================= HERO ================= */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex; align-items:center;
+    padding:140px 0 80px;
+    background:
+      radial-gradient(circle at 85% 15%, rgba(232,79,3,.22), transparent 45%),
+      linear-gradient(180deg, #1a1a1a 0%, var(--dark) 55%);
+    overflow:hidden;
+  }
+  .hero::before{
+    content:'';
+    position:absolute; inset:0;
+    background-image: repeating-linear-gradient(90deg, rgba(255,255,255,.025) 0 1px, transparent 1px 40px);
+    pointer-events:none;
+  }
+  .hero-grid{
+    display:grid; grid-template-columns: 1.15fr .85fr; gap:60px; align-items:center;
+    position:relative; z-index:2;
+  }
+  @media(max-width:900px){ .hero-grid{ grid-template-columns:1fr; } }
+
+  .hero h1{
+    font-size:clamp(38px, 5.4vw, 68px);
+    color:var(--white);
+    margin-bottom:24px;
+  }
+  .hero p.lead{
+    font-size:17px; line-height:1.6; color:var(--gray);
+    max-width:480px; margin-bottom:34px;
+  }
+  .hero .ctas{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:44px; }
+  .hero .regions{
+    display:flex; gap:2px; flex-wrap:wrap;
+    font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--gray);
+    border-top:1px solid rgba(255,255,255,.1); padding-top:24px;
+  }
+
+  .hero-visual{ position:relative; height:550px; }
+  .hero-photo{
+    width:110%; height:100%; border-radius:28px; overflow:hidden;
+    background: linear-gradient(160deg, #2a2a2a, #0c0c0c);
+    position:relative;
+    border:1px solid rgba(255,255,255,.08);
+  }
+  .hero-photo::after{
+    content:'';
+    position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(255,121,45,.18), transparent 45%),
+      radial-gradient(circle at 80% 85%, rgba(0,0,0,.35), transparent 50%);
+    pointer-events:none;
+  }
+  .hero-video{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    pointer-events:none;
+    border:0;
+  }
+
+  .float-icon{
+    position:absolute; z-index:3;
+  }
+  .fi-1{ top:6%; left:-8%; }
+  .fi-2{ top:70%; left:-4%; }
+  .fi-3{ top:12%; right:-7%; }
+  .fi-4{ bottom:-3%; right:-15%; }
+  @media(max-width:900px){ .float-icon{ display:none; } }
+
+  /* ================= SECTION SHELLS ================= */
+  section{ position:relative; padding:110px 0; }
+  .sec-light{ background:var(--cream); color:var(--ink); }
+  .sec-light .eyebrow{ color:var(--orange-1); }
+  .sec-dark{ background:var(--dark); color:var(--white); }
+  .sec-light::before{
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(ellipse at 90% 0%, rgba(255,121,45,.18), transparent 55%);
+    pointer-events:none;
+  }
+  @media(max-width:700px){ section{ padding:72px 0; } }
+
+  /* ---- Quem somos ---- */
+  .quem-somos{
+    display:grid; grid-template-columns: .95fr 1.05fr; gap:60px; align-items:start;
+    position:relative; z-index:1;
+  }
+  @media(max-width:860px){ .quem-somos{ grid-template-columns:1fr; } }
+  .quem-somos h2{ font-size:clamp(50px,4vw,60px); margin-bottom:20px; }
+  .quem-somos .accent-block{
+    border-left:2px solid var(--orange-1); padding-left:5px; margin-bottom:26px;
+  }
+  .quem-somos .accent-block p{ font-size:17px; line-height:1.65; color:#3a3a3a; }
+  .quem-somos p.body-txt{ font-size:16px; line-height:1.75; color:#4a4a4a; margin-bottom:26px; }
+  .quem-somos .tags{ display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+  .quem-somos .tags span{
+    font-size:12px; padding:8px 14px; border-radius:999px;
+    background:#E84F03; border:0px solid #141414; color:#ffffff;
+  }
+
+  /* ---- Como sua marca é vista ---- */
+  .vista-head{ max-width:640px; margin-bottom:60px; }
+  .vista-head h2{ font-size:clamp(30px,4vw,44px); }
+  .vista-list{ }
+  .vista-item{
+    display:grid; grid-template-columns: 60px 1fr; gap:24px;
+    padding:30px 0; border-top:1px solid rgba(255,255,255,.1);
+  }
+  .vista-item:last-child{ border-bottom:1px solid rgba(255,255,255,.1); }
+  .vista-num{ font-family:var(--disp); font-size:14px; color:var(--orange-2); font-weight:700; padding-top:4px; }
+  .vista-item h3{ font-size:24px; margin-bottom:8px; font-weight:700; }
+  .vista-item p{ color:var(--gray); font-size:15px; max-width:560px; line-height:1.6; }
+
+  /* ---- O que fazemos ---- */
+  .fazemos-grid{
+    display:grid; grid-template-columns: .9fr 1.1fr; gap:60px; align-items:start;
+    position:relative; z-index:1;
+  }
+  @media(max-width:860px){ .fazemos-grid{ grid-template-columns:1fr; } }
+  .fazemos-grid h2{ font-size:clamp(30px,4vw,44px); margin-bottom:18px; }
+  .fazemos-grid .accent-block{ border-left:3px solid var(--orange-1); padding-left:20px; margin-bottom:20px; }
+  .fazemos-grid .accent-block p{ font-size:16px; line-height:1.6; color:#3a3a3a; }
+  .servico-row{
+    border-top:1px solid rgba(0,0,0,.08);
+  }
+  .servico-row:last-child{ border-bottom:1px solid rgba(0,0,0,.08); }
+  .servico-q{
+    width:100%; background:none; border:none; cursor:pointer; text-align:left;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:24px 0; font-family:var(--body);
+  }
+  .servico-left{ display:flex; align-items:center; gap:20px; }
+  .servico-num{ font-family:var(--disp); font-size:13px; color:#c98a5c; font-weight:700; transition:color .25s ease; }
+  .servico-row.open .servico-num{ color:var(--orange-1); }
+  .servico-row h3{ font-size:22px; font-weight:700; }
+  .servico-row svg{ width:18px; height:18px; opacity:.5; transition:opacity .25s ease, transform .25s ease; flex-shrink:0; }
+  .servico-row.open svg{ opacity:1; transform:rotate(45deg); }
+  .servico-a{ max-height:0; overflow:hidden; transition:max-height .35s ease; }
+  .servico-a p{ padding:0 40px 24px 0; font-size:15px; color:#5a5a5a; line-height:1.65; max-width:520px; }
+  .servico-row.open .servico-a{ max-height:160px; }
+
+  /* ---- Por que a Lume (bento) ---- */
+  .bento-head{ max-width:640px; margin-bottom:20px; }
+  .bento-head h2{ font-size:clamp(30px,4vw,44px); margin-bottom:14px; }
+  .bento-head p{ color:var(--gray); font-size:16px; }
+  .bento{
+    margin-top:50px;
+    display:grid; grid-template-columns: 1fr 1fr; grid-template-rows:auto auto;
+    border:1px solid rgba(255,255,255,.1); border-radius:20px; overflow:hidden;
+  }
+  .bento-cell{ padding:38px; border-right:1px solid rgba(255,255,255,.1); border-bottom:1px solid rgba(255,255,255,.1); }
+  .bento-cell:nth-child(2n){ border-right:none; }
+  .bento-cell h3{ font-size:19px; margin-bottom:10px; font-weight:700; }
+  .bento-cell p{ font-size:14px; color:var(--gray); line-height:1.55; }
+  .bento-cell.big{ grid-row: span 2; display:flex; align-items:flex-end; }
+  .bento-cell.big .squircle{ margin-bottom:0; }
+  @media(max-width:760px){
+    .bento{ grid-template-columns:1fr; }
+    .bento-cell{ border-right:none; }
+    .bento-cell.big{ grid-row:auto; min-height:140px; }
+  }
+
+  /* ---- Números ---- */
+  .numeros{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:0;
+    border-top:1px solid rgba(255,255,255,.12);
+  }
+  .numeros .stat{ padding:34px 20px 0; text-align:left; border-left:1px solid rgba(255,255,255,.12); }
+  .numeros .stat:first-child{ border-left:none; padding-left:0; }
+  .numeros .stat .n{
+    font-family:var(--disp); font-weight:800; font-size:clamp(30px,4.4vw,58px);
+    color:var(--gray-2);
+    transition: color .4s ease;
+  }
+  .numeros .stat .n.counted{
+    color:transparent;
+    background:linear-gradient(100deg, var(--orange-2), #cfcfcf 75%);
+    -webkit-background-clip:text; background-clip:text;
+  }
+  .numeros .stat .l{ font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--gray); margin-top:10px; }
+  .numeros-head{ margin-bottom:10px; }
+  .numeros-head h2{ font-size:clamp(24px,3vw,34px); max-width:520px; }
+  @media(max-width:700px){
+    .numeros{ grid-template-columns:repeat(2,1fr); row-gap:30px; }
+    .numeros .stat:nth-child(2n+1){ border-left:none; padding-left:0; }
+    .numeros .stat:nth-child(2){ border-left:1px solid rgba(255,255,255,.12); padding-left:20px; }
+  }
+
+  /* ---- FAQ ---- */
+  .faq-wrap{ display:grid; grid-template-columns:.85fr 1.15fr; gap:60px; align-items:start; position:relative; z-index:1; }
+  @media(max-width:860px){ .faq-wrap{ grid-template-columns:1fr; } }
+  .faq-wrap h2{ font-size:clamp(30px,4vw,44px); }
+  .faq-item{ border-top:1px solid rgba(0,0,0,.1); }
+  .faq-wrap .faq-list{ border-bottom:1px solid rgba(0,0,0,.1); }
+  .faq-q{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:22px 0; font-family:var(--body);
+  }
+  .faq-q .qtext{ display:flex; align-items:center; gap:18px; }
+  .faq-q .num{ font-size:12px; color:#c98a5c; font-family:var(--disp); font-weight:700; }
+  .faq-q .txt{ font-size:16px; font-weight:600; color:var(--ink); }
+  .faq-q .plus{ font-size:20px; color:var(--orange-1); transition:transform .25s ease; flex-shrink:0; }
+  .faq-item.open .plus{ transform:rotate(45deg); }
+  .faq-a{ max-height:0; overflow:hidden; transition:max-height .3s ease; }
+  .faq-a p{ padding:0 0 22px 38px; font-size:14.5px; color:#5a5a5a; line-height:1.6; max-width:520px; }
+  .faq-item.open .faq-a{ max-height:200px; }
+
+  /* ---- CTA final ---- */
+  .cta-final{
+    text-align:center;
+    padding-bottom:60px;
+    background:
+      radial-gradient(circle at 50% 30%, rgba(232,79,3,.18), transparent 60%),
+      var(--dark);
+  }
+  .cta-final h2{ font-size:clamp(28px,4.6vw,50px); max-width:760px; margin:0 auto 22px; }
+  .cta-final p{ color:var(--gray); font-size:16px; max-width:480px; margin:0 auto 36px; line-height:1.6; }
+  .cta-final .btn{ margin-bottom:0; }
+  .cta-final .sec-link{ font-size:14px; text-decoration:underline; color:var(--gray); }
+
+  /* ---- Footer ---- */
+  footer{ background:var(--dark); padding-top:60px; }
+  .foot-sign{
+    display:flex; align-items:center; gap:24px; padding-bottom:50px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .foot-sign .logo{ font-size:26px; }
+  .foot-sign .line{ flex:1; height:1px; background:rgba(255,255,255,.15); }
+  .foot-sign .icons{ display:flex; gap:10px; }
+  .foot-sign .squircle{ width:42px; height:42px; border-radius:12px; }
+  .foot-sign .squircle svg{ width:18px; height:18px; }
+  @media(max-width:700px){ .foot-sign .icons{ display:none; } }
+
+  .foot-cols{
+    display:grid; grid-template-columns: 1.3fr 1fr 1fr; gap:40px;
+    padding:44px 0 30px;
+  }
+  @media(max-width:700px){ .foot-cols{ grid-template-columns:1fr; gap:26px; } }
+  .foot-cols h4{ font-family:var(--disp); font-size:15px; margin-bottom:14px; }
+  .foot-cols p, .foot-cols a{ font-size:14px; color:var(--gray); line-height:1.9; display:block; }
+  .foot-cols a:hover{ color:var(--orange-2); }
+  .foot-bottom{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:22px 0; border-top:1px solid rgba(255,255,255,.08);
+    font-size:12px; color:var(--gray);
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ ICON DEFS (reused inline) ============ -->
+
+<!-- ============ HEADER ============ -->
+<!-- 🟠 LOGO — troque o "src" da imagem abaixo pelo link/arquivo da sua logo -->
+<header>
+  <div class="wrap header-inner">
+    <a href="#top" class="logo"><img src="logo site.svg" alt=""></a>
+    <nav>
+      <a href="#top" class="navlink">Início</a>
+      <a href="#contato" class="btn btn-outline">Orçamento</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>Imagem que <span class="grad-word">impacta</span>.<br>Marca que <span class="grad-word">posiciona</span>.</h1>
+      <p class="lead">Produção audiovisual, drone e design para empresas, marcas e eventos que entenderam que imagem amadora custa mais caro do que produção profissional.</p>
+      <div class="ctas">
+        <a href="#contato" class="btn btn-primary">Pedir orçamento
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#fazemos" class="btn btn-outline">Ver portfólio</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <!-- 🟠 VÍDEO/IMAGEM DA CAPA — troque o "src" abaixo pelo
+           link/arquivo do vídeo (ou troque a tag <video> por <img>
+           se preferir usar uma foto estática) -->
+      <div class="hero-photo">
+        <video
+          class="hero-video"
+          src="vido drone fpv capa.mp4"
+          autoplay muted loop playsinline
+        ></video>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           🟠 ÍCONE 1 — canto SUPERIOR ESQUERDO (fundo laranja claro)
+           COLE O LINK/ARQUIVO DO ÍCONE NO "src" ABAIXO 👇
+           ═══════════════════════════════════════════════════════ -->
+      <div class="float-icon fi-1 float">
+        <div class="squircle" style="background:var(--orange-2)">
+          <img src="MATERIAL/elemento/Vector-1.svg" alt="">
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           🟠 ÍCONE 2 — canto INFERIOR ESQUERDO (fundo bege)
+           COLE O LINK/ARQUIVO DO ÍCONE NO "src" ABAIXO 👇
+           ═══════════════════════════════════════════════════════ -->
+      <div class="float-icon fi-2 float delay1">
+        <div class="squircle">
+          <img src="MATERIAL/elemento/Group.svg" alt="">
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           🟠 ÍCONE 3 — canto SUPERIOR DIREITO (fundo bege)
+           COLE O LINK/ARQUIVO DO ÍCONE NO "src" ABAIXO 👇
+           ═══════════════════════════════════════════════════════ -->
+      <div class="float-icon fi-3 float delay2">
+        <div class="squircle">
+          <img src="MATERIAL/elemento/Group 61.svg" alt="">
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════
+           🟠 ÍCONE 4 — canto INFERIOR DIREITO (fundo laranja escuro)
+           COLE O LINK/ARQUIVO DO ÍCONE NO "src" ABAIXO 👇
+           ═══════════════════════════════════════════════════════ -->
+      <div class="float-icon fi-4 float delay3">
+        <div class="squircle" style="background:var(--orange-1)">
+          <img src="MATERIAL/elemento/Vector.svg" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUEM SOMOS ============ -->
+<section class="sec-light">
+  <div class="wrap quem-somos">
+    <div>
+      <div class="eyebrow on-light">A Lume</div>
+      <h2>Audiovisual, drone e design em <span style="color:var(--orange-1)">um só lugar.</span></h2>
+      <div class="tags">
+        <span>Edição de vídeo</span><span>Drone</span><span>Fotografia</span><span>Design</span>
+      </div>
+    </div>
+    <div>
+      <div class="accent-block">
+        <b>A Lume Studio nasceu pra fugir do audiovisual genérico.</b>
+      </div>
+      <p class="body-txt">Unimos filmagem, drone, fotografia e design num único estúdio, com direção criativa e estética cinematográfica — para transformar ideias e momentos em conteúdo que realmente comunica.</p>
+      <p class="body-txt">Atendemos empresas, construtoras, imobiliárias, profissionais liberais e marcas que querem se posicionar com uma imagem à altura do que entregam.</p>
+      <!-- 🟠 LINK DO INSTAGRAM — troque o "href" abaixo -->
+      <a href="https://linktr.ee/studiolumebr" class="btn btn-primary" target="_blank" rel="noopener">Ver portfólio
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M7 7h10v10"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMO SUA MARCA É VISTA ============ -->
+<section class="sec-dark">
+  <div class="wrap">
+    <div class="vista-head">
+      <div class="eyebrow on-dark">A virada</div>
+      <h2>Imagine sua marca sendo vista <span class="grad-word">assim</span>.</h2>
+    </div>
+    <div class="vista-list">
+      <div class="vista-item">
+        <div class="vista-num">01</div>
+        <div><h3>Você vira <span class="highlight">referência</span>.</h3><p>Imagem profissional muda a forma como o mercado te enxerga — a conversa de venda já começa com respeito.</p></div>
+      </div>
+      <div class="vista-item">
+        <div class="vista-num">02</div>
+        <div><h3>Clientes <span class="highlight">maiores</span> chegam até você.</h3><p>Quando a apresentação é boa, quem se apresenta bem paga bem. Vídeo amador atrai quem pede desconto.</p></div>
+      </div>
+      <div class="vista-item">
+        <div class="vista-num">03</div>
+        <div><h3>Sua marca trabalha <span class="highlight">sozinha</span>.</h3><p>Um vídeo de apresentação bem feito vende por você em reunião, licitação, feira ou rede social. É fica ativo mesmo sem você.</p></div>
+      </div>
+      <div class="vista-item">
+        <div class="vista-num">04</div>
+        <div><h3>Você sai do <span class="highlight">improviso</span>.</h3><p>Acabou a correria atrás de "alguém que grava" e o sumiço das redes por falta de material.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ O QUE FAZEMOS ============ -->
+<section class="sec-light" id="fazemos">
+  <div class="wrap fazemos-grid">
+    <div>
+      <div class="eyebrow on-light">O que fazemos</div>
+      <h2>Vídeo profissional para cada momento do seu negócio</h2>
+      <div class="accent-block">
+        <p>Produção completa, do roteiro à entrega final: filmagem, drone, fotografia e design trabalhando juntos.</p>
+      </div>
+      <a href="#contato" class="btn btn-primary">Pedir orçamento
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    <div>
+      <div class="servico-row open">
+        <button class="servico-q"><div class="servico-left"><span class="servico-num">01</span><h3>Vídeos institucionais e publicitários</h3></div><svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg></button>
+        <div class="servico-a"><p>O vídeo que apresenta sua empresa, ou você, como merece ser visto. Perfeito para site, reuniões comerciais e licitações. Feito para durar anos no ar.</p></div>
+      </div>
+      <div class="servico-row">
+        <button class="servico-q"><div class="servico-left"><span class="servico-num">02</span><h3>Conteúdo para redes sociais</h3></div><svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg></button>
+        <div class="servico-a"><p>Vídeos gravados e editados no formato certo de cada rede, prontos para publicar. A solução para quem quer presença constante sem montar equipe interna.</p></div>
+      </div>
+      <div class="servico-row">
+        <button class="servico-q"><div class="servico-left"><span class="servico-num">03</span><h3>Cobertura de eventos</h3></div><svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg></button>
+        <div class="servico-a"><p>Palestras, bastidores e o teaser do evento, tudo captado sem atrapalhar a programação. Seu evento continua rendendo depois que acaba.</p></div>
+      </div>
+      <div class="servico-row">
+        <button class="servico-q"><div class="servico-left"><span class="servico-num">04</span><h3>Fotografia profissional</h3></div><svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg></button>
+        <div class="servico-a"><p>Imagens que comunicam a qualidade do seu produto, ambiente ou equipe — para site, catálogo e redes sociais.</p></div>
+      </div>
+      <div class="servico-row">
+        <button class="servico-q"><div class="servico-left"><span class="servico-num">05</span><h3>Filmagens com drone</h3></div><svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg></button>
+        <div class="servico-a"><p>Captação aérea profissional para imóveis, eventos e obras. Ângulos que só o drone entrega, com equipamento e piloto próprios.</p></div>
+      </div>
+      <div class="servico-row">
+        <button class="servico-q"><div class="servico-left"><span class="servico-num">06</span><h3>Design e identidade visual</h3></div><svg viewBox="0 0 24 24" fill="none" stroke="#1a1a1a" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg></button>
+        <div class="servico-a"><p>Peças gráficas e identidade visual pensadas junto com o audiovisual, pra sua marca falar a mesma língua em qualquer formato.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ POR QUE A LUME (bento) ============ -->
+<section class="sec-dark">
+  <div class="wrap">
+    <div class="bento-head">
+      <div class="eyebrow on-dark">Por que a Lume</div>
+      <h2>O que você não precisa se preocupar quando fecha com a gente</h2>
+      <p>Cada item abaixo existe porque é exatamente onde o audiovisual genérico falha.</p>
+    </div>
+    <div class="bento">
+      <div>
+        <div class="bento-cell">
+          <h3>Entrega rapidas e constantes com agilidade e qualidade, mantendo uma entraga dentro do prazo para melhor agendamento</h3>
+        </div>
+      </div>
+      <div class="bento-cell">
+        <h3>Equipamento próprio completo</h3>
+        <p>Câmera, drone, iluminação e áudio profissionais. Você não precisa alugar nada.</p>
+      </div>
+      <div class="bento-cell">
+        <h3>Direção criativa e cinematográfica</h3>
+        <p>Não é só gravar — é pensar a narrativa da sua marca do começo ao fim.</p>
+      </div>
+      <div class="bento-cell">
+        <h3>Atendimento próximo e personalizado</h3>
+        <p>Entendemos o objetivo de cada projeto antes de gravar qualquer coisa.</p>
+      </div>
+      <div class="bento-cell">
+        <h3>Orçamento fechado antes de gravar</h3>
+        <p>Escopo e valor definidos por escrito. Sem surpresa na entrega.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NÚMEROS ============ -->
+<section class="sec-dark">
+  <div class="wrap">
+    <div class="numeros-head">
+      <div class="eyebrow on-dark">O ecossistema Lume</div>
+      <h2>Ideias, imagens e resultado em escala.</h2>
+    </div>
+    <!-- 🟠 NÚMEROS — edite o "data-target" (valor final) e o texto
+         da legenda (classe .l) para trocar os números/legendas -->
+    <div class="numeros">
+      <div class="stat"><div class="n" data-target="300">+0</div><div class="l">Clientes atendidos</div></div>
+      <div class="stat"><div class="n" data-target="3000">+0</div><div class="l">Criativos produzidos</div></div>
+      <div class="stat"><div class="n" data-target="5000">+0</div><div class="l">Vídeos e fotos (drone incl.)</div></div>
+      <div class="stat"><div class="n" data-target="320">+0</div><div class="l">Vídeos editados</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="sec-light">
+  <div class="wrap faq-wrap">
+    <div>
+      <div class="eyebrow on-light">Perguntas diretas</div>
+      <h2>O que todo mundo pergunta antes de fechar</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q"><span class="qtext"><span class="num">01</span><span class="txt">Vocês trabalham com drone?</span></span><span class="plus">+</span></button>
+        <div class="faq-a"><p>Sim. Temos equipamento próprio de drone e piloto habilitado para captação aérea em vídeos e fotos.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span class="qtext"><span class="num">02</span><span class="txt">Vocês fazem apenas a gravação ou também a edição?</span></span><span class="plus">+</span></button>
+        <div class="faq-a"><p>Gravação e edição completas, incluindo correção de cor e finalização — sem precisar contratar outro fornecedor.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span class="qtext"><span class="num">03</span><span class="txt">Vocês fazem vídeos para empresas e redes sociais?</span></span><span class="plus">+</span></button>
+        <div class="faq-a"><p>Sim, produzimos tanto vídeos institucionais quanto conteúdo pensado especificamente para redes sociais.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span class="qtext"><span class="num">04</span><span class="txt">Vocês atendem eventos e casamentos?</span></span><span class="plus">+</span></button>
+        <div class="faq-a"><p>Sim, fazemos cobertura de eventos corporativos e sociais, incluindo casamentos.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span class="qtext"><span class="num">05</span><span class="txt">Vocês fazem orçamento personalizado?</span></span><span class="plus">+</span></button>
+        <div class="faq-a"><p>Sempre. Cada projeto tem escopo, prazo e valor definidos por escrito antes de começar.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span class="qtext"><span class="num">06</span><span class="txt">Qual o prazo de entrega dos vídeos?</span></span><span class="plus">+</span></button>
+        <div class="faq-a"><p>Varia com a complexidade do projeto — combinamos o prazo com você antes da gravação e ele entra no contrato.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span class="qtext"><span class="num">07</span><span class="txt">Vocês atendem fora de Belo Horizonte?</span></span><span class="plus">+</span></button>
+        <div class="faq-a"><p>Atendemos principalmente BH e região metropolitana, mas avaliamos projetos em outras cidades de Minas Gerais.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span class="qtext"><span class="num">08</span><span class="txt">É possível contratar apenas alguns serviços, como drone ou fotografia?</span></span><span class="plus">+</span></button>
+        <div class="faq-a"><p>Sim, os serviços podem ser contratados separadamente, de acordo com a necessidade do seu projeto.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA FINAL ============ -->
+<!-- 🟠 LINK DO WHATSAPP — troque o número no "href" abaixo (formato: 55 + DDD + número) -->
+<section class="cta-final" id="contato">
+  <div class="wrap">
+    <h2>Quanto vale uma <span class="grad-word">primeira impressão?</span> </h2>
+    <p>Chama a Lume no WhatsApp, conte sua ideia e receba uma proposta com escopo, prazo e valor fechados.</p>
+    <a href="https://wa.me/5531996394536" class="btn btn-primary" target="_blank" rel="noopener">Pedir orçamento
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-cols">
+      <div>
+        <h4>Lume Studio</h4>
+        <p>Produção audiovisual, drone e design · Belo Horizonte e Região Metropolitana</p>
+      </div>
+      <div>
+        <h4>Contato</h4>
+        <!-- 🟠 CONTATOS — troque telefone, e-mail e @ do Instagram abaixo -->
+        <a href="https://wa.me/5531996394536" target="_blank" rel="noopener">WhatsApp (31) 9 9639-4536</a>
+        <a href="mailto:studiolumebr@gmail.com">studiolumebr@gmail.com</a>
+        <a href="https://instagram.com/lumestudio_br" target="_blank" rel="noopener">@lumestudio_br</a>
+      </div>
+      <div>
+        <h4>Institucional</h4>
+        <a href="#fazemos">Portfólio</a>
+        <a href="#">Política de privacidade</a>
+      </div>
+    </div>
+
+    <div class="foot-bottom">
+      <span>© 2026 Lume Studio</span>
+      <span>✦</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('.faq-item').forEach(item=>{
+    item.querySelector('.faq-q').addEventListener('click', ()=>{
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(o=>{ if(o!==item) o.classList.remove('open'); });
+      item.classList.toggle('open', !isOpen);
+    });
+  });
+
+  // 🟠 ACORDEÃO "O QUE FAZEMOS" — abre/fecha ao clicar, igual o FAQ
+  document.querySelectorAll('.servico-row').forEach(item=>{
+    item.querySelector('.servico-q').addEventListener('click', ()=>{
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.servico-row.open').forEach(o=>{ if(o!==item) o.classList.remove('open'); });
+      item.classList.toggle('open', !isOpen);
+    });
+  });
+
+  // 🟠 CONTADOR ANIMADO DOS NÚMEROS — anima de 0 até o valor real
+  // quando a seção entra na tela (usa o "data-target" de cada número)
+  const statEls = document.querySelectorAll('.numeros .n');
+  const animateCount = (el) => {
+    const target = parseInt(el.getAttribute('data-target'), 10) || 0;
+    const duration = 1400;
+    const start = performance.now();
+    function tick(now){
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      const value = Math.floor(eased * target);
+      el.textContent = '+' + value.toLocaleString('pt-BR');
+      if(progress < 1){
+        requestAnimationFrame(tick);
+      } else {
+        el.textContent = '+' + target.toLocaleString('pt-BR');
+        el.classList.add('counted'); // 🟠 troca de cor ao terminar a contagem
+      }
+    }
+    requestAnimationFrame(tick);
+  };
+
+  const statsObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        statEls.forEach(animateCount);
+        statsObserver.disconnect(); // roda só uma vez
+      }
+    });
+  }, { threshold: 0.4 });
+
+  const numerosSection = document.querySelector('.numeros');
+  if(numerosSection) statsObserver.observe(numerosSection);
+
+  // 🟠 SCROLL REVEAL — aplica a classe "reveal" nos principais
+  // blocos do site e os anima suavemente quando entram na tela.
+  // Para adicionar animação em um novo elemento, basta incluir
+  // o seletor dele na lista "revealSelectors" abaixo.
+  const revealSelectors = [
+    '.eyebrow', '.hero h1', '.hero p.lead', '.hero .ctas',
+    '.quem-somos > div', '.vista-item', '.servico-row',
+    '.bento-cell', '.numeros-head', '.stat',
+    '.faq-wrap > div:first-child', '.faq-item',
+    '.cta-final h2', '.cta-final p', '.cta-final .btn',
+    'section h2', '.hero-visual'
+  ];
+  const revealGroups = document.querySelectorAll(revealSelectors.join(','));
+  revealGroups.forEach((el, i) => {
+    el.classList.add('reveal');
+    el.style.transitionDelay = ((i % 6) * 80) + 'ms';
+  });
+
+  const revealObserver = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  revealGroups.forEach(el => revealObserver.observe(el));
+</script>
+
+</body>
+</html>
