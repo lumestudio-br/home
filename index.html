@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lume Studio</title>
+<title>Lume Studio — Produção audiovisual, drone e design</title>
 
 <!-- ═══════════════════════════════════════════════════════════
      🟠 FAVICON — troque o "href" abaixo pelo link/arquivo do
      ícone da aba do navegador (ex: assets/favicon.png)
      ═══════════════════════════════════════════════════════════ -->
-<link rel="icon" type="image/png" href="FAVICON.svg">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -67,9 +67,19 @@
   }
   .btn:hover{ transform:translateY(-2px); }
   .btn-primary{
-    background: linear-gradient(135deg, var(--orange-1), var(--orange-2));
-    color:#141414;
+    background: linear-gradient(120deg, var(--orange-1), var(--orange-2), var(--orange-1));
+    background-size: 220% 220%;
+    animation: gradientWave 6s ease-in-out infinite;
+    color:var(--white);
     box-shadow: 0 10px 30px -10px rgba(232,79,3,.6);
+  }
+  @keyframes gradientWave{
+    0%{ background-position: 0% 50%; }
+    50%{ background-position: 100% 50%; }
+    100%{ background-position: 0% 50%; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .btn-primary{ animation:none; }
   }
   .btn-primary:hover{ box-shadow: 0 16px 34px -8px rgba(255,121,45,.7); }
   /* glass / frosted button */
@@ -117,15 +127,15 @@
 
   .squircle{
     width:52px; height:52px; border-radius:16px;
-    background:var(--cream);
+    background:transparent;
     display:flex; align-items:center; justify-content:center;
     flex-shrink:0;
     overflow:hidden;
   }
-  .squircle svg{ width:24px; height:24px; }
+.squircle svg{ width:24px; height:24px; }
   .squircle img{ width:24px; height:24px; object-fit:contain; }
 
-  /* floating icon animation */
+  /* floating icon animation configuração 4 icones capa */
   @keyframes floaty{
     0%,100%{ transform:translateY(0) rotate(0deg); }
     50%{ transform:translateY(-14px) rotate(3deg); }
@@ -213,14 +223,32 @@
   }
   .hero .ctas{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:44px; }
   .hero .regions{
-    display:flex; gap:2px; flex-wrap:wrap;
+    display:flex; gap:22px; flex-wrap:wrap;
     font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--gray);
     border-top:1px solid rgba(255,255,255,.1); padding-top:24px;
   }
 
-  .hero-visual{ position:relative; height:550px; }
+  /* 🟠 VÍDEO DA CAPA — sempre em formato vertical (retrato), em
+     qualquer tamanho de tela. Ajuste "max-width" para mudar o
+     tamanho, e "aspect-ratio" para mudar o formato (9/16 = vertical
+     tipo Stories; 3/4 é um pouco menos vertical; 1/1 é quadrado) */
+  .hero-visual{
+    position:relative;
+    width:100%;
+    max-width:360px;
+    aspect-ratio: 9 / 16;
+    margin:0 auto;
+    justify-self:center;
+  }
+  /* fallback para navegadores muito antigos sem suporte a aspect-ratio */
+  @supports not (aspect-ratio: 1 / 1){
+    .hero-visual{ height:600px; }
+  }
+  @media(min-width:901px){
+    .hero-visual{ justify-self:end; margin:0; }
+  }
   .hero-photo{
-    width:110%; height:100%; border-radius:28px; overflow:hidden;
+    width:100%; height:100%; border-radius:28px; overflow:hidden;
     background: linear-gradient(160deg, #2a2a2a, #0c0c0c);
     position:relative;
     border:1px solid rgba(255,255,255,.08);
@@ -248,7 +276,7 @@
   .fi-2{ top:70%; left:-4%; }
   .fi-3{ top:12%; right:-7%; }
   .fi-4{ bottom:-3%; right:-15%; }
-  @media(max-width:900px){ .float-icon{ display:none; } }
+   @media(max-width:900px){ .float-icon{ display:none; } }
 
   /* ================= SECTION SHELLS ================= */
   section{ position:relative; padding:110px 0; }
@@ -268,16 +296,16 @@
     position:relative; z-index:1;
   }
   @media(max-width:860px){ .quem-somos{ grid-template-columns:1fr; } }
-  .quem-somos h2{ font-size:clamp(50px,4vw,60px); margin-bottom:20px; }
+  .quem-somos h2{ font-size:clamp(30px,4vw,44px); margin-bottom:20px; }
   .quem-somos .accent-block{
-    border-left:2px solid var(--orange-1); padding-left:5px; margin-bottom:26px;
+    border-left:3px solid var(--orange-1); padding-left:20px; margin-bottom:26px;
   }
   .quem-somos .accent-block p{ font-size:17px; line-height:1.65; color:#3a3a3a; }
   .quem-somos p.body-txt{ font-size:16px; line-height:1.75; color:#4a4a4a; margin-bottom:26px; }
   .quem-somos .tags{ display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
   .quem-somos .tags span{
     font-size:12px; padding:8px 14px; border-radius:999px;
-    background:#E84F03; border:0px solid #141414; color:#ffffff;
+    background:#E84F03; border:1px solid rgba(0,0,0,.08); color:#F5EFDD;
   }
 
   /* ---- Como sua marca é vista ---- */
@@ -327,19 +355,23 @@
   .bento-head p{ color:var(--gray); font-size:16px; }
   .bento{
     margin-top:50px;
-    display:grid; grid-template-columns: 1fr 1fr; grid-template-rows:auto auto;
+    display:grid; grid-template-columns: 1fr 1fr;
     border:1px solid rgba(255,255,255,.1); border-radius:20px; overflow:hidden;
   }
-  .bento-cell{ padding:38px; border-right:1px solid rgba(255,255,255,.1); border-bottom:1px solid rgba(255,255,255,.1); }
+  /* 🟠 células todas do mesmo tamanho — ajuste "min-height" para
+     deixar as caixas mais altas/baixas de forma uniforme */
+  .bento-cell{
+    padding:38px;
+    min-height:190px;
+    display:flex; flex-direction:column; justify-content:center;
+    border-right:1px solid rgba(255,255,255,.1); border-bottom:1px solid rgba(255,255,255,.1);
+  }
   .bento-cell:nth-child(2n){ border-right:none; }
   .bento-cell h3{ font-size:19px; margin-bottom:10px; font-weight:700; }
   .bento-cell p{ font-size:14px; color:var(--gray); line-height:1.55; }
-  .bento-cell.big{ grid-row: span 2; display:flex; align-items:flex-end; }
-  .bento-cell.big .squircle{ margin-bottom:0; }
   @media(max-width:760px){
     .bento{ grid-template-columns:1fr; }
-    .bento-cell{ border-right:none; }
-    .bento-cell.big{ grid-row:auto; min-height:140px; }
+    .bento-cell{ border-right:none; min-height:0; }
   }
 
   /* ---- Números ---- */
@@ -380,7 +412,8 @@
     padding:22px 0; font-family:var(--body);
   }
   .faq-q .qtext{ display:flex; align-items:center; gap:18px; }
-  .faq-q .num{ font-size:12px; color:#c98a5c; font-family:var(--disp); font-weight:700; }
+  .faq-q .num{ font-size:12px; color:#c98a5c; font-family:var(--disp); font-weight:700; transition:color .25s ease; }
+  .faq-item.open .faq-q .num{ color:var(--orange-1); }
   .faq-q .txt{ font-size:16px; font-weight:600; color:var(--ink); }
   .faq-q .plus{ font-size:20px; color:var(--orange-1); transition:transform .25s ease; flex-shrink:0; }
   .faq-item.open .plus{ transform:rotate(45deg); }
@@ -400,6 +433,54 @@
   .cta-final p{ color:var(--gray); font-size:16px; max-width:480px; margin:0 auto 36px; line-height:1.6; }
   .cta-final .btn{ margin-bottom:0; }
   .cta-final .sec-link{ font-size:14px; text-decoration:underline; color:var(--gray); }
+
+  /* ═══════════════════════════════════════════════════════════
+     🟠 FAIXA DE LOGOS DE CLIENTES (marquee) — rola sozinha da
+     direita pra esquerda, em loop infinito.
+     PARA AJUSTAR A VELOCIDADE: mude o valor de "--marquee-speed"
+     abaixo. Número MENOR = mais rápido. Número MAIOR = mais devagar.
+     ═══════════════════════════════════════════════════════════ */
+  :root{ --marquee-speed: 28s; }
+  .clients-marquee{
+    overflow:hidden;
+    padding:40px 0;
+    background:var(--dark);
+    border-top:0px solid rgba(255,255,255,.08);
+    border-bottom:2px solid rgba(255,255,255,.08);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .clients-track{
+    display:flex; align-items:center; gap:64px;
+    width:max-content;
+    animation: marquee var(--marquee-speed) linear infinite;
+  }
+  .clients-marquee:hover .clients-track{ animation-play-state: paused; }
+  /* 🟠 Tamanho uniforme de cada logo — todos ficam do mesmo tamanho
+     não importa o formato/proporção original do arquivo */
+  .client-logo{
+    height:44px; width:130px;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .client-logo img{
+    max-height:100%; max-width:100%; object-fit:contain;
+    /* 🟠 Tinge o logo na cor da marca (#F5EFDD). Se um logo ficar
+       estranho, pode remover o filter só daquele <img>. */
+    filter: brightness(0) saturate(100%) invert(94%) sepia(9%) saturate(390%) hue-rotate(2deg) brightness(101%) contrast(96%);
+    opacity:.85;
+  }
+  /* 🟠 A distância exata do loop (--marquee-shift) é calculada
+     automaticamente pelo JS, com base na largura real da sua lista
+     de logos — por isso o loop nunca "pula" nem deixa espaço vazio,
+     não importa quantos clientes você tiver. */
+  @keyframes marquee{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(calc(-1 * var(--marquee-shift, 50%))); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .clients-track{ animation:none; }
+  }
 
   /* ---- Footer ---- */
   footer{ background:var(--dark); padding-top:60px; }
@@ -440,7 +521,7 @@
     <a href="#top" class="logo"><img src="logo site.svg" alt=""></a>
     <nav>
       <a href="#top" class="navlink">Início</a>
-      <a href="#contato" class="btn btn-outline">Orçamento</a>
+      <a href="#contato" class="btn btn-primary">Orçamento</a>
     </nav>
   </div>
 </header>
@@ -449,25 +530,28 @@
 <section class="hero" id="top">
   <div class="wrap hero-grid">
     <div>
-      <h1>Imagem que <span class="grad-word">impacta</span>.<br>Marca que <span class="grad-word">posiciona</span>.</h1>
+      <h1>Imagem que <span class="grad-word">impacta.</span><br>Marca que <span class="grad-word">posiciona.</span></h1>
       <p class="lead">Produção audiovisual, drone e design para empresas, marcas e eventos que entenderam que imagem amadora custa mais caro do que produção profissional.</p>
       <div class="ctas">
         <a href="#contato" class="btn btn-primary">Pedir orçamento
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
         </a>
-        <a href="#fazemos" class="btn btn-outline">Ver portfólio</a>
+        <a href="https://instagram.com/lumestudio_br" class="btn btn-primary" target="_blank" rel="noopener">Ver portfólio</a>
       </div>
     </div>
 
     <div class="hero-visual">
-      <!-- 🟠 VÍDEO/IMAGEM DA CAPA — troque o "src" abaixo pelo
-           link/arquivo do vídeo (ou troque a tag <video> por <img>
-           se preferir usar uma foto estática) -->
+      <!-- ═══════════════════════════════════════════════════════
+           🟠 VÍDEO(S) DA CAPA — a lista de vídeos fica no JS, lá
+           embaixo perto do fechamento da página (procure por
+           "heroVideos"). Para adicionar mais vídeos, é só duplicar
+           uma linha da lista e trocar o link/arquivo.
+           ═══════════════════════════════════════════════════════ -->
       <div class="hero-photo">
         <video
           class="hero-video"
-          src="vido drone fpv capa.mp4"
-          autoplay muted loop playsinline
+          id="heroVideo"
+          autoplay muted playsinline
         ></video>
       </div>
 
@@ -477,7 +561,7 @@
            ═══════════════════════════════════════════════════════ -->
       <div class="float-icon fi-1 float">
         <div class="squircle" style="background:var(--orange-2)">
-          <img src="MATERIAL/elemento/Vector-1.svg" alt="">
+          <img src="play.svg" alt="">
         </div>
       </div>
 
@@ -486,8 +570,8 @@
            COLE O LINK/ARQUIVO DO ÍCONE NO "src" ABAIXO 👇
            ═══════════════════════════════════════════════════════ -->
       <div class="float-icon fi-2 float delay1">
-        <div class="squircle">
-          <img src="MATERIAL/elemento/Group.svg" alt="">
+       <div class="squircle" style="background:#F5EFDD">
+          <img src="pentu.svg" alt="">
         </div>
       </div>
 
@@ -496,8 +580,8 @@
            COLE O LINK/ARQUIVO DO ÍCONE NO "src" ABAIXO 👇
            ═══════════════════════════════════════════════════════ -->
       <div class="float-icon fi-3 float delay2">
-        <div class="squircle">
-          <img src="MATERIAL/elemento/Group 61.svg" alt="">
+        <div class="squircle" style="background:#F5EFDD">
+          <img src="drone.svg" alt="">
         </div>
       </div>
 
@@ -507,12 +591,13 @@
            ═══════════════════════════════════════════════════════ -->
       <div class="float-icon fi-4 float delay3">
         <div class="squircle" style="background:var(--orange-1)">
-          <img src="MATERIAL/elemento/Vector.svg" alt="">
+          <img src="flash.svg" alt="">
         </div>
       </div>
     </div>
   </div>
 </section>
+
 
 <!-- ============ QUEM SOMOS ============ -->
 <section class="sec-light">
@@ -521,17 +606,17 @@
       <div class="eyebrow on-light">A Lume</div>
       <h2>Audiovisual, drone e design em <span style="color:var(--orange-1)">um só lugar.</span></h2>
       <div class="tags">
-        <span>Edição de vídeo</span><span>Drone</span><span>Fotografia</span><span>Design</span>
+        <span>Vídeo</span><span>Drone</span><span>Fotografia</span><span>Design</span>
       </div>
     </div>
     <div>
       <div class="accent-block">
-        <b>A Lume Studio nasceu pra fugir do audiovisual genérico.</b>
+        <p>A Lume Studio nasceu pra fugir do audiovisual genérico.</p>
       </div>
       <p class="body-txt">Unimos filmagem, drone, fotografia e design num único estúdio, com direção criativa e estética cinematográfica — para transformar ideias e momentos em conteúdo que realmente comunica.</p>
       <p class="body-txt">Atendemos empresas, construtoras, imobiliárias, profissionais liberais e marcas que querem se posicionar com uma imagem à altura do que entregam.</p>
       <!-- 🟠 LINK DO INSTAGRAM — troque o "href" abaixo -->
-      <a href="https://linktr.ee/studiolumebr" class="btn btn-primary" target="_blank" rel="noopener">Ver portfólio
+      <a href="https://instagram.com/lumestudio_br" class="btn btn-primary" target="_blank" rel="noopener">Ver portfólio
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17L17 7M7 7h10v10"/></svg>
       </a>
     </div>
@@ -543,12 +628,12 @@
   <div class="wrap">
     <div class="vista-head">
       <div class="eyebrow on-dark">A virada</div>
-      <h2>Imagine sua marca sendo vista <span class="grad-word">assim</span>.</h2>
+      <h2>Imagine sua marca sendo vista <span class="grad-word">assim.</span></h2>
     </div>
     <div class="vista-list">
       <div class="vista-item">
         <div class="vista-num">01</div>
-        <div><h3>Você vira <span class="highlight">referência</span>.</h3><p>Imagem profissional muda a forma como o mercado te enxerga — a conversa de venda já começa com respeito.</p></div>
+        <div><h3>Você vira <span class="highlight">referência.</span></h3><p>Imagem profissional muda a forma como o mercado te enxerga — a conversa de venda já começa com respeito.</p></div>
       </div>
       <div class="vista-item">
         <div class="vista-num">02</div>
@@ -556,11 +641,11 @@
       </div>
       <div class="vista-item">
         <div class="vista-num">03</div>
-        <div><h3>Sua marca trabalha <span class="highlight">sozinha</span>.</h3><p>Um vídeo de apresentação bem feito vende por você em reunião, licitação, feira ou rede social. É fica ativo mesmo sem você.</p></div>
+        <div><h3>Sua marca trabalha <span class="highlight">sozinha.</span></h3><p>Um vídeo de apresentação bem feito vende por você em reunião, licitação, feira ou rede social. É fica ativo mesmo sem você.</p></div>
       </div>
       <div class="vista-item">
         <div class="vista-num">04</div>
-        <div><h3>Você sai do <span class="highlight">improviso</span>.</h3><p>Acabou a correria atrás de "alguém que grava" e o sumiço das redes por falta de material.</p></div>
+        <div><h3>Você sai do <span class="highlight">improviso.</span></h3><p>Acabou a correria atrás de "alguém que grava" e o sumiço das redes por falta de material.</p></div>
       </div>
     </div>
   </div>
@@ -617,10 +702,9 @@
       <p>Cada item abaixo existe porque é exatamente onde o audiovisual genérico falha.</p>
     </div>
     <div class="bento">
-      <div>
-        <div class="bento-cell">
-          <h3>Entrega rapidas e constantes com agilidade e qualidade, mantendo uma entraga dentro do prazo para melhor agendamento</h3>
-        </div>
+      <div class="bento-cell">
+        <h3>Entregas rápidas e constantes</h3>
+        <p>Agilidade e qualidade sem abrir mão do prazo — cada entrega combinada com antecedência, pra você organizar sua agenda.</p>
       </div>
       <div class="bento-cell">
         <h3>Equipamento próprio completo</h3>
@@ -708,13 +792,32 @@
 <!-- 🟠 LINK DO WHATSAPP — troque o número no "href" abaixo (formato: 55 + DDD + número) -->
 <section class="cta-final" id="contato">
   <div class="wrap">
-    <h2>Quanto vale uma <span class="grad-word">primeira impressão?</span> </h2>
+    <h2>Quanto vale uma <span class="grad-word">primeira impressão</span> ruim?</h2>
     <p>Chama a Lume no WhatsApp, conte sua ideia e receba uma proposta com escopo, prazo e valor fechados.</p>
     <a href="https://wa.me/5531996394536" class="btn btn-primary" target="_blank" rel="noopener">Pedir orçamento
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
     </a>
   </div>
 </section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     🟠 LOGOS DE CLIENTES — faixa rolando sozinha (marquee), em
+     loop CONTÍNUO e AUTOMÁTICO — o código se encarrega de repetir
+     os logos quantas vezes forem necessárias pra nunca ter espaço
+     vazio ou "pulo", não importa se você tem 2 ou 20 logos.
+
+     PARA ADICIONAR/REMOVER UM CLIENTE: edite só a lista abaixo,
+     uma vez — não precisa duplicar nada manualmente.
+     ═══════════════════════════════════════════════════════════ -->
+<div class="clients-marquee">
+  <div class="clients-track" id="clientsTrack">
+    <div class="client-logo"><img src="cliente/bravas 1.svg" alt="Cliente 1"></div>
+    <div class="client-logo"><img src="cliente/grupofama.svg" alt="Cliente 2"></div>
+    <div class="client-logo"><img src="cliente/logomeno.svg" alt="Cliente 3"></div>
+    <div class="client-logo"><img src="cliente/logovupt.svg" alt="Cliente 4"></div>
+    <div class="client-logo"><img src="cliente/sitiofama.svg" alt="Cliente 5"></div>
+  </div>
+</div>
 
 <!-- ============ FOOTER ============ -->
 <footer>
@@ -733,8 +836,8 @@
       </div>
       <div>
         <h4>Institucional</h4>
-        <a href="#fazemos">Portfólio</a>
-        <a href="#">Política de privacidade</a>
+        <a href="linktr.ee/studiolumebr">Portfólio</a>
+        <a href="https://wa.me/5531996394536">Contato</a>
       </div>
     </div>
 
@@ -746,6 +849,34 @@
 </footer>
 
 <script>
+  // ═══════════════════════════════════════════════════════════
+  // 🟠 VÍDEOS DA CAPA — liste aqui todos os vídeos que quer que
+  // apareçam na hero. Com 1 vídeo só, ele fica em loop contínuo.
+  // Com 2 ou mais, ele toca um, depois passa pro próximo, e volta
+  // ao primeiro no final (loop da playlist).
+  //
+  // PARA ADICIONAR UM NOVO VÍDEO: duplique uma linha abaixo e
+  // troque o link/caminho do arquivo.
+  // ═══════════════════════════════════════════════════════════
+  const heroVideos = [
+    'video igreja lume.mp4',
+    // 'MATERIAL/outro-video.mp4',
+    // 'MATERIAL/mais-um-video.mp4',
+  ];
+  const heroVideoEl = document.getElementById('heroVideo');
+  let heroVideoIndex = 0;
+  function playHeroVideo(i){
+    heroVideoEl.src = heroVideos[i];
+    heroVideoEl.loop = heroVideos.length <= 1; // só 1 vídeo = loop dele mesmo
+    heroVideoEl.play().catch(()=>{});
+  }
+  if(heroVideoEl && heroVideos.length){
+    playHeroVideo(0);
+    heroVideoEl.addEventListener('ended', ()=>{
+      heroVideoIndex = (heroVideoIndex + 1) % heroVideos.length;
+      playHeroVideo(heroVideoIndex);
+    });
+  }
   document.querySelectorAll('.faq-item').forEach(item=>{
     item.querySelector('.faq-q').addEventListener('click', ()=>{
       const isOpen = item.classList.contains('open');
@@ -825,6 +956,43 @@
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
   revealGroups.forEach(el => revealObserver.observe(el));
+
+  // ═══════════════════════════════════════════════════════════
+  // 🟠 FAIXA DE CLIENTES — duplica a lista de logos automaticamente
+  // até preencher pelo menos 2x a largura da tela, e calcula a
+  // distância exata do loop (--marquee-shift). Assim o carrossel
+  // sempre roda contínuo e sem "pulo", com qualquer quantidade de
+  // logos que você colocar na lista (não precisa duplicar nada
+  // manualmente no HTML).
+  // ═══════════════════════════════════════════════════════════
+  function setupClientsMarquee(){
+    const track = document.getElementById('clientsTrack');
+    const wrap = document.querySelector('.clients-marquee');
+    if(!track || !wrap) return;
+
+    const originalHTML = track.innerHTML;
+    track.innerHTML = originalHTML; // garante estado limpo (útil se a função rodar de novo no resize)
+
+    const gapPx = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 0;
+    const singleSetWidth = track.scrollWidth; // largura de UMA volta completa da lista
+    const shift = singleSetWidth + gapPx; // distância que o CSS vai animar (1 volta + espaçamento)
+
+    track.style.setProperty('--marquee-shift', shift + 'px');
+
+    // duplica quantas vezes for necessário pra sempre cobrir a tela
+    let totalWidth = singleSetWidth;
+    let guard = 0; // trava de segurança pra nunca duplicar infinitamente
+    while (totalWidth < wrap.clientWidth * 2 + shift && guard < 12){
+      track.insertAdjacentHTML('beforeend', originalHTML);
+      totalWidth += shift;
+      guard++;
+    }
+  }
+  setupClientsMarquee();
+  window.addEventListener('resize', () => {
+    clearTimeout(window.__marqueeResizeT);
+    window.__marqueeResizeT = setTimeout(setupClientsMarquee, 200);
+  });
 </script>
 
 </body>
