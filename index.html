@@ -275,7 +275,7 @@
   .fi-1{ top:6%; left:-8%; }
   .fi-2{ top:70%; left:-4%; }
   .fi-3{ top:12%; right:-7%; }
-  .fi-4{ bottom:-3%; right:15%; }
+  .fi-4{ bottom:-3%; right:-5%; }
    @media(max-width:900px){ .float-icon{ display:none; } }
 
   /* ================= SECTION SHELLS ================= */
@@ -304,8 +304,20 @@
   .quem-somos p.body-txt{ font-size:16px; line-height:1.75; color:#4a4a4a; margin-bottom:26px; }
   .quem-somos .tags{ display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
   .quem-somos .tags span{
-    font-size:12px; padding:8px 14px; border-radius:999px;
-    background:#E84F03; border:1px solid rgba(0,0,0,.08); color:#F5EFDD;
+    font-size:13px; font-weight:600; padding:12px 22px; border-radius:999px;
+    background: linear-gradient(120deg, var(--orange-1), var(--orange-2), var(--orange-1));
+    background-size: 220% 220%;
+    animation: gradientWave 6s ease-in-out infinite;
+    color:var(--white);
+    box-shadow: 0 10px 30px -10px rgba(232,79,3,.6);
+    transition: transform .25s ease, box-shadow .25s ease;
+  }
+  .quem-somos .tags span:hover{
+    transform:translateY(-2px);
+    box-shadow: 0 16px 34px -8px rgba(255,121,45,.7);
+  }
+  @media (prefers-reduced-motion: reduce){
+    .quem-somos .tags span{ animation:none; }
   }
 
   /* ---- Como sua marca é vista ---- */
